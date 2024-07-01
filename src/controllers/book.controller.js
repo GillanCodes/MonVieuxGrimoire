@@ -32,6 +32,7 @@ module.exports.postBook = async (req, res) => {
 
     // Get data in request body
     const {title, author, year, genre} = req.body
+    const imageUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
 
     try {
         
@@ -41,7 +42,7 @@ module.exports.postBook = async (req, res) => {
             author,
             year,
             genre,
-            imageUrl: "none",
+            imageUrl: imageUrl,
             userId: res.locals.user._id
         });
 
@@ -60,6 +61,7 @@ module.exports.editBook = async (req, res) => {
 
         let {id} = req.params;
         let {title, author, year, genre} = req.body;
+        const imageUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
 
         let book = await bookModel.findById(id);
 
@@ -70,7 +72,8 @@ module.exports.editBook = async (req, res) => {
                 title,
                 year,
                 genre,
-                author
+                author,
+                imageUrl
             }
         }, {new: true, upsert: true}).then((data) => {
             res.status(201).send({data});
