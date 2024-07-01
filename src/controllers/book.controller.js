@@ -32,7 +32,10 @@ module.exports.postBook = async (req, res) => {
 
     // Get data in request body
     const {title, author, year, genre} = req.body
-    const imageUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
+
+    var imageUrl;
+    if (req.file)
+        var imageUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
 
     try {
         
@@ -61,7 +64,10 @@ module.exports.editBook = async (req, res) => {
 
         let {id} = req.params;
         let {title, author, year, genre} = req.body;
-        const imageUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
+        
+        var imageUrl;
+        if (req.file)
+            var imageUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
 
         let book = await bookModel.findById(id);
 
