@@ -3,9 +3,9 @@ const userModel = require('../models/user.model');
 
 module.exports = async (req, res, next) => {
 
-    let token = req.headers.authorization.split(' ')[1];
+    let token = req.headers.authorization;
     if (token) {
-        jwt.verify(token, process.env.JWT_TOKEN, async(err, decodedToken) => {
+        jwt.verify(token.split(' ')[1], process.env.JWT_TOKEN, async(err, decodedToken) => {
             if (err) {
                 res.locals.user = null;
                 next();
