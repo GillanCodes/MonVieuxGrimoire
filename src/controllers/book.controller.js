@@ -84,10 +84,70 @@ module.exports.editBook = async (req, res) => {
 
 }
 
-module.exports.deleteBook = (req, res) => {
+module.exports.deleteBook = async (req, res) => {
     
+    try {
+
+        let {id} = req.params;
+        let book = await bookModel.findById(id);
+
+        if (book.userId !== res.locals.user._id.toString()) throw new Error("must_be_author_to_edit_book");
+
+        const delBook = await bookModel.findByIdAndDelete(id);
+
+        res.status(201).json(delBook);
+
+    } catch (error) {
+        throw new Error(error);
+    } 
+
 }
 
-module.exports.rateBook = (req, res) => {
-    
+module.exports.rateBook = async (req, res) => {
+
+    try {
+
+        let {note} = req.body;
+        let {id} = req.params;
+
+        let book = await bookModel.findById(id);
+
+        let userId = res.locals.user._id.toString();
+
+        if (book.rating.find((item) => item.userId === userId)) throw new Error("already_noted_that_book");
+
+        await bookModel.findByIdAndUpdate(id, {
+            $addToSet: {
+                rating: {
+                    userId: res.locals.user._id,
+                    grade: note
+                }
+            }
+        }, {new: true, upsert: true}).then(async (data) => {
+            
+            var sum = 0;
+            
+            data.rating.forEach(function(item) { sum += item.grade });
+            //var avg = data.rating.reduce((a,b) => a.grade + b.grade, 0) / data.rating.length;
+
+            var avg = sum / data.rating.length;
+
+            await bookModel.findByIdAndUpdate(id, {
+                $set: {
+                    averageRating: avg
+                }
+            }, {upsert: true, new:true}).then((data) => { 
+                res.status(201).send({data});
+            }).catch((err) => { 
+                throw new Error(err);
+            })
+
+        }).catch((err) => { 
+            throw new Error(err)
+        })
+        
+    } catch (error) {
+        throw new Error(error);
+    }
+
 }
