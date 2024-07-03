@@ -7,6 +7,8 @@ const MIME_TYPE = {
 	'image/webp': 'webp',
 }
 
+const maxSize = 1048576; // 1mb
+
 const storage = multer.diskStorage({
 	destination: function (req, file, callback) {
 		callback(null, './images')
@@ -21,4 +23,12 @@ const storage = multer.diskStorage({
 	}
 })
 
-module.exports = multer({storage}).single('image')
+
+const upload = multer({
+	storage,
+	limits: {
+		fileSize: maxSize
+	}
+})
+
+module.exports = upload.single('image')
