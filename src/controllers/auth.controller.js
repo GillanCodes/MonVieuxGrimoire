@@ -22,8 +22,6 @@ module.exports.login = async(req, res) => {
     try {
         var user = await userModel.login(email, password);
 
-        console.log(user);
-
         if (!user) throw new Error("Invalid user");
 
         const token = createToken(user._id);
