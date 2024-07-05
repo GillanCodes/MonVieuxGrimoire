@@ -33,6 +33,8 @@ const corsOptions = {
 }
 app.use(cors(corsOptions));
 
+app.use("/assets", express.static('public'));
+
 // Body parser Import
 let bodyParser = require('body-parser');
 

@@ -35,7 +35,7 @@ module.exports.postBook = async (req, res) => {
 
     var imageUrl;
     if (req.file)
-        var imageUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
+        var imageUrl = `${req.protocol}://${req.get('host')}/assets/books/${req.file.filename}`;
 
     try {
         
