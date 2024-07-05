@@ -5,7 +5,7 @@ module.exports.getBooks = async (req, res) => {
     // We get all books
     const books = await bookModel.find();
     // Send all book
-    res.status(201).send({books})
+    res.status(201).json(books)
 }
 
 module.exports.getBook = async (req, res) => {
@@ -15,7 +15,7 @@ module.exports.getBook = async (req, res) => {
     // Get the book that corespond to the id
     let book = await bookModel.findById(id);
     // If the book exist return it
-    if (book) return res.status(200).send({book});
+    if (book) return res.status(200).json(book);
 
     //Else send "no book"
     return res.status(401).send("no book")
@@ -25,7 +25,7 @@ module.exports.getBestRating = async (req, res) => {
 
     //Get the book that a sort by average rating and cut to get only the 3 firsts
     let books = await bookModel.find().sort({averageRating: -1}).limit(3);
-    return res.status(200).json({books});
+    return res.status(200).json(books);
 }
 
 module.exports.postBook = async (req, res) => {
