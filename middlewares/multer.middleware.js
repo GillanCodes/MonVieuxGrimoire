@@ -1,4 +1,5 @@
-const multer = require('multer')
+const multer = require('multer');
+const sharpMulter = require('sharp-multer');
 
 const MIME_TYPE = {
 	'image/jpg': 'jpg',
@@ -7,28 +8,54 @@ const MIME_TYPE = {
 	'image/webp': 'webp',
 }
 
-const maxSize = 1048576; // 1mb
+// const newFilenameFunction = (og_filename, options) => {
+// 	const newname =
+// 	  og_filename.split(".").slice(0, -1).join(".") +
+// 	  `${options.useTimestamp ? "-" + Date.now() : ""}` +
+// 	  "." +
+// 	  options.fileFormat;
+// 	return newname;
+// };
 
-const storage = multer.diskStorage({
+const newFilenameFunction = (og_filename, options) => {
+	const filename = og_filename.split(' ').join('_')
+	const filenameArray = filename.split('.')
+	filenameArray.pop()
+	const filenameWithoutExtention = filenameArray.join('.')
+
+	const newName = filenameWithoutExtention + Date.now() + "." + options.fileFormat
+	return newName
+}
+
+// const storage = multer.diskStorage({
+// 	destination: function (req, file, callback) {
+// 		callback(null, './public/books')
+// 	},
+// 	filename:  (req, file, callback) => {
+// 		const filename = file.originalname.split(' ').join('_')
+// 		const filenameArray = filename.split('.')
+// 		filenameArray.pop()
+// 		const filenameWithoutExtention = filenameArray.join('.')
+// 			const extension = MIME_TYPE[file.mimetype]
+// 		callback(null, filenameWithoutExtention + Date.now() + '.' + extension)
+// 	}
+// })
+
+const storage = sharpMulter({
 	destination: function (req, file, callback) {
 		callback(null, './public/books')
 	},
-	filename:  (req, file, callback) => {
-		const filename = file.originalname.split(' ').join('_')
-		const filenameArray = filename.split('.')
-		filenameArray.pop()
-		const filenameWithoutExtention = filenameArray.join('.')
-			const extension = MIME_TYPE[file.mimetype]
-		callback(null, filenameWithoutExtention + Date.now() + '.' + extension)
-	}
+	imageOptions:{
+		fileFormat: "webp",
+		quality: 30,
+		resize: {width: 500, height:650}
+	},
+	filename: newFilenameFunction
 })
 
 
 const upload = multer({
 	storage,
-	limits: {
-		fileSize: maxSize
-	}
 })
 
 module.exports = upload.single('image')
