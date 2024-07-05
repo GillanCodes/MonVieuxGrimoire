@@ -69,13 +69,13 @@ module.exports.editBook = async (req, res) => {
         // Get id in url params
         let {id} = req.params;
         // Get body params
-        let {title, author, year, genre} = req.body;
+        let {title, author, year, genre} = JSON.parse(req.body.book);
 
         //Check if image
         var imageUrl;
         if (req.file)
             //Create image path
-            var imageUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
+            var imageUrl = `${req.protocol}://${req.get('host')}/assets/books/${req.file.filename}`;
 
         //Check if book owner is actual user
         let book = await bookModel.findById(id);
@@ -90,9 +90,9 @@ module.exports.editBook = async (req, res) => {
                 author,
                 imageUrl
             }
-        }, {new: true, upsert: true}).then((ata) => {
+        }, {new: true, upsert: true}).then((data) => {
             //Send data
-            res.status(201).send({data});
+            res.status(201).json(data);
         }).catch((err) => { 
             throw new Error(err)
         })
