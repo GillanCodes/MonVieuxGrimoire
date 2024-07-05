@@ -18,7 +18,7 @@ module.exports.getBook = async (req, res) => {
     if (book) return res.status(200).json(book);
 
     //Else send "no book"
-    return res.status(401).send("no book")
+    return console.log(new Error("no_book_found"))
 }
 
 module.exports.getBestRating = async (req, res) => {
@@ -32,8 +32,6 @@ module.exports.postBook = async (req, res) => {
 
     // Get data in request body
     const {title, author, year, genre, ratings, averageRating} = JSON.parse(req.body.book)
-
-    console.log(ratings)
 
     var imageUrl;
     if (req.file)
@@ -57,7 +55,7 @@ module.exports.postBook = async (req, res) => {
         return res.status(201).json(book);
 
     } catch (error) {
-        throw new Error(error);
+        return console.log(new Error(error)) 
     }
 
 }
@@ -98,7 +96,7 @@ module.exports.editBook = async (req, res) => {
         })
         
     } catch (error) {
-        throw new Error(error);
+        return console.log(new Error(error))
     }
 
 }
@@ -120,7 +118,7 @@ module.exports.deleteBook = async (req, res) => {
         res.status(201).json(delBook);
 
     } catch (error) {
-        throw new Error(error);
+        return console.log(new Error(error))
     } 
 
 }
@@ -138,8 +136,6 @@ module.exports.rateBook = async (req, res) => {
         let userId = res.locals.user._id.toString();
 
         if (book.ratings.find((item) => item.userId === userId)) throw new Error("already_noted_that_book");
-
-        console.log(res.locals.user)
 
         // If not, update the book entry with the grade
         await bookModel.findByIdAndUpdate(id, {
@@ -175,7 +171,7 @@ module.exports.rateBook = async (req, res) => {
         })
         
     } catch (error) {
-        throw new Error(error);
+        return console.log(new Error(error))
     }
 
 }

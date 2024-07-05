@@ -12,7 +12,7 @@ module.exports.register = async(req, res) => {
         const user = await userModel.create({email, password});
         res.status(201).json({user:user._id});
     } catch (error) {
-        return res.send(error);
+        return console.log(new Error(error))
     }
 }
 
@@ -28,6 +28,6 @@ module.exports.login = async(req, res) => {
         res.status(201).json({userId:user._id, token});
 
     } catch (error) {
-        return res.send({error});
+        return console.log(new Error(error))
     }
 }
