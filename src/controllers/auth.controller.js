@@ -1,8 +1,8 @@
 const userModel = require('../../models/user.model');
 let jwt = require('jsonwebtoken');
 
-const createToken = (id) => {
-    return jwt.sign({id}, process.env.JWT_TOKEN);
+const createToken = (userId) => {
+    return jwt.sign({userId}, process.env.JWT_TOKEN);
 }
 
 module.exports.register = async(req, res) => {

@@ -10,7 +10,7 @@ module.exports = async (req, res, next) => {
                 res.locals.user = null;
                 next();
             } else {
-                let user = await userModel.findById(decodedToken.id).select("-password");
+                let user = await userModel.findById(decodedToken.userId).select("-password");
                 res.locals.user = user;
                 next();
             }
