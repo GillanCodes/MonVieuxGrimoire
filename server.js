@@ -2,6 +2,7 @@
 let express = require('express');
 require('dotenv').config({path: "./config/.env"})
 let checkUser = require("./middlewares/checkUser.middleware")
+let cors = require('cors')
 
 // Init app
 let app = express();
@@ -10,6 +11,27 @@ let app = express();
 require('dotenv').config({path: "./config/.env"})
 // Require the database file
 require('./config/database');
+
+//Cors config
+    //This array is all the allowed ip to this api
+let whiteList = [undefined, 'http://localhost:3000', "http://127.0.0.1:3000"];
+const corsOptions = {
+    origin : function (origin, cb) {
+        if (whiteList.indexOf(origin) !== -1)
+        {
+            cb(null, true);
+        } else {
+            cb(new Error('Not Allowed by CORS'), true);
+        }
+    },
+    'credentials' : true,
+    'allowHeaders' : ['sessionId', 'Content-Type', 'Authorization'],
+    'exposedHeaders' : ['sessionId'],
+    'methods' : 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    'preflightContinue': false,
+    'optionsSuccessStatus': 200
+}
+app.use(cors(corsOptions));
 
 // Body parser Import
 let bodyParser = require('body-parser');
