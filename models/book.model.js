@@ -25,7 +25,7 @@ const bookSchema = new mongoose.Schema({
         required: true,
         type: String,
     },
-    rating: {
+    ratings: {
         type: [
             {
                 userId: String,
