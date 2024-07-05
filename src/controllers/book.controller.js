@@ -31,7 +31,9 @@ module.exports.getBestRating = async (req, res) => {
 module.exports.postBook = async (req, res) => {
 
     // Get data in request body
-    const {title, author, year, genre} = req.body
+    const {title, author, year, genre, ratings, averageRating} = JSON.parse(req.body.book)
+
+    console.log(ratings)
 
     var imageUrl;
     if (req.file)
@@ -46,7 +48,9 @@ module.exports.postBook = async (req, res) => {
             year,
             genre,
             imageUrl: imageUrl,
-            userId: res.locals.user._id
+            userId: res.locals.user._id,
+            ratings,
+            averageRating
         });
 
         //Send the result
@@ -86,7 +90,7 @@ module.exports.editBook = async (req, res) => {
                 author,
                 imageUrl
             }
-        }, {new: true, upsert: true}).then((data) => {
+        }, {new: true, upsert: true}).then((ata) => {
             //Send data
             res.status(201).send({data});
         }).catch((err) => { 
