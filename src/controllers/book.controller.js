@@ -66,7 +66,7 @@ module.exports.editBook = async (req, res) => {
         let {id} = req.params;
         // Get body params
         let {title, author, year, genre} = req.body;
-                
+
         //Check if image
         var imageUrl;
         if (req.file)
@@ -124,33 +124,35 @@ module.exports.deleteBook = async (req, res) => {
 module.exports.rateBook = async (req, res) => {
 
     try {
-
         
-        let {note} = req.body;
+        let {rating} = req.body;
         let {id} = req.params;
 
         let book = await bookModel.findById(id);
 
          //Check if actual user has already noted that book
         let userId = res.locals.user._id.toString();
-        if (book.rating.find((item) => item.userId === userId)) throw new Error("already_noted_that_book");
+
+        if (book.ratings.find((item) => item.userId === userId)) throw new Error("already_noted_that_book");
+
+        console.log(res.locals.user)
 
         // If not, update the book entry with the grade
         await bookModel.findByIdAndUpdate(id, {
             $addToSet: {
-                rating: {
+                ratings: {
                     userId: res.locals.user._id,
-                    grade: note
+                    grade: rating
                 }
             }
         }, {new: true, upsert: true}).then(async (data) => {
            
             //Calculate the new average note
             var sum = 0;
-            data.rating.forEach(function(item) { sum += item.grade });
+            data.ratings.forEach(function(item) { sum += item.grade });
 
             // We round up the note (4,9 => 5 || 3,6 => 4)
-            var avg =  Math.ceil(sum / data.rating.length);
+            var avg =  Math.ceil(sum / data.ratings.length);
 
             // Set the new average on book entry
             await bookModel.findByIdAndUpdate(id, {
@@ -159,7 +161,7 @@ module.exports.rateBook = async (req, res) => {
                 }
             }, {upsert: true, new:true}).then((data) => { 
                 //Send data
-                res.status(201).send({data});
+                res.status(201).json(data);
             }).catch((err) => { 
                 throw new Error(err);
             })
