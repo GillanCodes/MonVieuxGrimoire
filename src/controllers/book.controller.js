@@ -2,23 +2,31 @@ const bookModel = require("../../models/book.model")
 
 module.exports.getBooks = async (req, res) => {
 
-    // We get all books
-    const books = await bookModel.find();
-    // Send all book
-    res.status(201).json(books)
+    try {
+        // We get all books
+        const books = await bookModel.find();
+        // Send all book
+        res.status(201).json(books)
+    } catch (error) {
+        return console.log(new Error(error))
+    }
 }
 
 module.exports.getBook = async (req, res) => {
-    
-    // Get the id in params
-    let {id} = req.params;
-    // Get the book that corespond to the id
-    let book = await bookModel.findById(id);
-    // If the book exist return it
-    if (book) return res.status(200).json(book);
 
-    //Else send "no book"
-    return console.log(new Error("no_book_found"))
+    try {
+        // Get the id in params
+        let {id} = req.params;
+        // Get the book that corespond to the id
+        let book = await bookModel.findById(id);
+        // If the book exist return it
+        if (book) return res.status(200).json(book);
+
+        //Else send "no book"
+        return console.log(new Error("no_book_found"))
+    } catch (error) {
+        return console.log(new Error(error))
+    }
 }
 
 module.exports.getBestRating = async (req, res) => {
