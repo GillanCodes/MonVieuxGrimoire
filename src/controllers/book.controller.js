@@ -67,7 +67,7 @@ module.exports.editBook = async (req, res) => {
         // Get id in url params
         let {id} = req.params;
         // Get body params
-        let {title, author, year, genre} = JSON.parse(req.body.book);
+        let {title, author, year, genre} = req.body;
 
         //Check if image
         var imageUrl;
